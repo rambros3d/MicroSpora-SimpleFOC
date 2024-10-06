@@ -1,1 +1,2 @@
-![Pinout](https://github.com/jacobrosenthal/MicroSpora/raw/master/doc/pinout.png)
+![Pinout](photos/Microspora-pinout.png)
+
