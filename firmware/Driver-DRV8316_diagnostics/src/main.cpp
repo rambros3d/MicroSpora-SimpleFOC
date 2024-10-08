@@ -5,13 +5,10 @@
 #include <SimpleFOCDrivers.h>
 #include "drivers/drv8316/drv8316.h"
 
-
+SPIClass SPI_1(SPI_MOSI, SPI_MISO, SPI_SCK);
 BLDCMotor motor = BLDCMotor(11);
-DRV8316Driver6PWM driver = DRV8316Driver6PWM(PHA_H, PHA_L, PHB_L, PHB_H, PHC_L, PHC_H, PIN_SPI_SS, false);  // use the right pins for your setup!
+DRV8316Driver6PWM driver = DRV8316Driver6PWM(PHA_H, PHA_L, PHB_H, PHB_L, PHC_H, PHC_L, DRV_CS, false);
 
-
-// velocity set point variable
-float target_velocity = 7.0;
 
 void printDRV8316Status() {
   DRV8316Status status = driver.getStatus();
@@ -60,7 +57,6 @@ void printDRV8316Status() {
   Serial.print(status.isSPIClockFramingError());
   Serial.print("  Parity: ");
   Serial.println(status.isSPIParityError());
-
   if (status.isFault())
     driver.clearFault();
   delayMicroseconds(1);  // ensure 400ns delay
@@ -73,22 +69,24 @@ void printDRV8316Status() {
   Serial.println(lock);
 }
 
-
-
 void setup() {
   Serial.begin(115200);
   while (!Serial);
   delay(1);
   Serial.println("Initializing...");
 
-  driver.voltage_power_supply = 15;
-  driver.init();
+  driver.voltage_power_supply = 12;
+  driver.init(&SPI_1);
   driver.setBuckVoltage(VB_5V);
+  driver.setOCPLevel(Curr_24A);
+  driver.setOCPMode(AutoRetry_Fault);
+  driver.setOCPRetryTime(Retry500ms);
+  driver.setSlew(Slew_50Vus);
 
   motor.linkDriver(&driver);
   motor.controller = MotionControlType::velocity_openloop;
-  motor.voltage_limit = 1;
-  motor.velocity_limit = 10;
+  motor.voltage_limit = 4;
+  motor.velocity_limit = 20;
   motor.init();
   Serial.println("Init complete...");
 
@@ -97,15 +95,10 @@ void setup() {
 }
 
 
+// velocity set point variable
+float target_velocity = 7.0;
+
+
 void loop() {
   motor.move(target_velocity);
-  static uint16_t count = 0;
-  if (count > 2000) {
-    Serial.println(analogRead(VSENS));  // read voltage sensor
-    printDRV8316Status();
-    count = 0;
-  }
-  count++;
-
-  delay(1);
 }
