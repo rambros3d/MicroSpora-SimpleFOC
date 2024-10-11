@@ -1,2 +1,2 @@
-![Pinout](photos/Microspora-pinout.png)
+![Pinout](Microspora-pinout-rambros3d.jpg)
 

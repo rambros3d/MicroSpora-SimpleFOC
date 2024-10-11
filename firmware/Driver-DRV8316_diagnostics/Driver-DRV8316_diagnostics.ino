@@ -5,10 +5,9 @@
 #include <SimpleFOCDrivers.h>
 #include "drivers/drv8316/drv8316.h"
 
-SPIClass SPI_1(SPI_MOSI, SPI_MISO, SPI_SCK);
-BLDCMotor motor = BLDCMotor(11);
-DRV8316Driver6PWM driver = DRV8316Driver6PWM(PHA_H, PHA_L, PHB_H, PHB_L, PHC_H, PHC_L, DRV_CS, false);
+BLDCMotor motor = BLDCMotor(14);
 
+DRV8316Driver6PWM driver = DRV8316Driver6PWM(PHA_H, PHA_L, PHB_H, PHB_L, PHC_H, PHC_L, DRV_CS, true);
 
 void printDRV8316Status() {
   DRV8316Status status = driver.getStatus();
@@ -70,33 +69,40 @@ void printDRV8316Status() {
 }
 
 void setup() {
-  Serial.begin(115200);
-  while (!Serial);
-  delay(1);
+  pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, HIGH);
+
+  delay(100);
+  Serial.begin(250000);
   Serial.println("Initializing...");
 
-  driver.voltage_power_supply = 12;
-  driver.init(&SPI_1);
+  driver.voltage_power_supply = 8.0;
+  driver.voltage_limit = 0.5;
+  driver.pwm_frequency = 2000;
+  driver.init();
+  driver.setSlew(Slew_200Vus);
   driver.setBuckVoltage(VB_5V);
-  driver.setOCPLevel(Curr_24A);
-  driver.setOCPMode(AutoRetry_Fault);
-  driver.setOCPRetryTime(Retry500ms);
-  driver.setSlew(Slew_50Vus);
+  driver.enable();
 
   motor.linkDriver(&driver);
   motor.controller = MotionControlType::velocity_openloop;
-  motor.voltage_limit = 4;
-  motor.velocity_limit = 20;
+  motor.voltage_limit = 0.5;
+  motor.velocity_limit = 20.0;
   motor.init();
+  motor.enable();
   Serial.println("Init complete...");
 
   delay(100);
   printDRV8316Status();
+
+  digitalWrite(LED_BUILTIN, LOW);
+  Serial.println("Done");
+  SimpleFOCDebug::enable(&Serial);
 }
 
 
 // velocity set point variable
-float target_velocity = 7.0;
+float target_velocity = 1.0;
 
 
 void loop() {

@@ -1,13 +1,25 @@
+/*
+  MicroSpora - MT6701 Sensor Example
+  
+  This code initializes and reads angle and velocity data from the
+  MT6701 magnetic encoder. SPI2 is used since SPI1  will be
+  utilized for the DRV8316 driver.
+
+  Pin Mapping:
+  - ENC_NC  -> PA7  ; Not connected (dummy MOSI)
+  - ENC_SDO -> PA6  ; configured as MISO
+  - ENC_CLK -> PA5
+  - ENC_CS  -> PA4
+
+  Serial output format:
+  - Angle in radians and degrees
+  - Velocity in rad/s and RPM
+*/
+
 #include "Arduino.h"
 #include "SimpleFOC.h"
 #include "SimpleFOCDrivers.h"
 #include "encoders/mt6701/MagneticSensorMT6701SSI.h"
-
-// MT6701 pin mapping
-// ENC_NC - PA7
-// ENC_SDO - PA6
-// ENC_CLK - PA5
-// ENC_CS - PA4
 
 //  Use SPI_2 for sensor since default SPI will be used by DRV8316C
 SPIClass SPI_2(ENC_NC, ENC_SDO, ENC_CLK);

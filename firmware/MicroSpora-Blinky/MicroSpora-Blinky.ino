@@ -1,3 +1,9 @@
+/*
+  Microspora - Blink example
+  
+  This code blinks the inbuilt LED connected to pin PC6
+  The LED will turn on for 1 second, then turn off for 1 second, repeatedly.
+*/
 
 #include "Arduino.h"
 
