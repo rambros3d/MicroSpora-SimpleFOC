@@ -26,7 +26,6 @@
   - Target velocity updates
 */
 
-#include "arduino_pin_def.h"
 #include "Arduino.h"
 #include <Wire.h>
 #include <SimpleFOC.h>

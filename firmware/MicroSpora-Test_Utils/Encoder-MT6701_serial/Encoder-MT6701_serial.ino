@@ -16,6 +16,8 @@
   - Velocity in rad/s and RPM
 */
 
+#include <arduino_pin_def.h>
+
 #include "Arduino.h"
 #include "SimpleFOC.h"
 #include "SimpleFOCDrivers.h"
