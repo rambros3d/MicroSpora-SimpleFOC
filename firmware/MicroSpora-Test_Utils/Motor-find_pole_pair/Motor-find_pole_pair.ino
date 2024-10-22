@@ -33,7 +33,11 @@ DRV8316Driver6PWM driver = DRV8316Driver6PWM(PHA_H, PHA_L, PHB_H, PHB_L, PHC_H, 
 SPIClass SPI_2(ENC_NC, ENC_SDO, ENC_CLK);
 MagneticSensorMT6701SSI sensor = MagneticSensorMT6701SSI(ENC_CS);
 
-float target_voltage = 0.6;
+float target_voltage = 2;
+float driver_voltage_limit = 0.8;
+
+float pp_search_voltage = 2;    // maximum power_supply_voltage/2
+float pp_search_angle = 6 * _PI;  // search electrical angle to turn
 
 void setup() {
 
@@ -47,11 +51,12 @@ void setup() {
   SimpleFOCDebug::enable(&Serial);
 
   sensor.init(&SPI_2);        //  Initialize sensor on SPI_2 bus
+  motor.sensor_direction = Direction::CCW;
   motor.linkSensor(&sensor);  // link the motor to the sensor
 
   // driver config
   driver.voltage_power_supply = 8.0;
-  driver.voltage_limit = 0.8;
+  driver.voltage_limit = driver_voltage_limit;
   driver.pwm_frequency = 20000;
   driver.init();
   driver.setSlew(Slew_200Vus);
@@ -67,8 +72,6 @@ void setup() {
   Serial.println("Pole pairs (PP) estimator");
   Serial.println("-\n");
 
-  float pp_search_voltage = 0.6;      // maximum power_supply_voltage/2
-  float pp_search_angle = 6 * _PI;  // search electrical angle to turn
 
   // move motor to the electrical angle 0
   motor.controller = MotionControlType::angle_openloop;

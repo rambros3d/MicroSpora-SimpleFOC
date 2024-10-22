@@ -27,17 +27,19 @@
 */
 
 #include "Arduino.h"
-#include <Wire.h>
 #include <SimpleFOC.h>
 #include <SimpleFOCDrivers.h>
 #include "drivers/drv8316/drv8316.h"
 
-BLDCMotor motor = BLDCMotor(14);
+#include <arduino_pin_def.h>
+
+BLDCMotor motor = BLDCMotor(4);
 
 DRV8316Driver6PWM driver = DRV8316Driver6PWM(PHA_H, PHA_L, PHB_H, PHB_L, PHC_H, PHC_L, DRV_CS, false);
 
 //target variable
-float target_velocity = 5;
+float target_velocity = 2.0;
+float voltage_limit = 1.0;
 
 // instantiate the commander
 Commander command = Commander(Serial);
@@ -119,7 +121,7 @@ void setup() {
 
   // driver config
   driver.voltage_power_supply = 8.0;
-  driver.voltage_limit = 1.0;
+  driver.voltage_limit = voltage_limit;
   driver.init();
   driver.setSlew(Slew_200Vus);
   driver.setPWMMode(PWM6_CurrentLimit_Mode);
@@ -132,7 +134,7 @@ void setup() {
   motor.linkDriver(&driver);
   // open loop control config
   motor.controller = MotionControlType::velocity_openloop;
-  motor.voltage_limit = 1.0;
+  motor.voltage_limit = voltage_limit / 2.0;
   motor.velocity_limit = 20.0;
   // init motor hardware
   if (!motor.init()) {

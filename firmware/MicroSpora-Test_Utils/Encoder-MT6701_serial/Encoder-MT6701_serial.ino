@@ -48,16 +48,16 @@ void loop() {
   Serial.print(radians, 4);
 
   Serial.print("\tdeg = ");
-  Serial.print(degrees, 2);
+  Serial.print(degrees, 4);
 
   float velocity = sensor.getVelocity();
   float rpm = velocity * (60.0 / (2.0 * PI));
 
   Serial.print("\t  Velocity: rad/s = ");
-  Serial.print(velocity);
+  Serial.print(velocity,1);
 
   Serial.print("\t  RPM = ");
-  Serial.println(rpm);
+  Serial.println(rpm,2);
 
   _delay(100);
 }

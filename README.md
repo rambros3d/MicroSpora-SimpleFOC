@@ -1,2 +1,2 @@
-![Pinout](Microspora-pinout-rambros3d.jpg)
+![Pinout](Microspora-pinout-rambros3d.webp)
 

@@ -30,7 +30,7 @@ DRV8316Driver6PWM driver = DRV8316Driver6PWM(PHA_H, PHA_L, PHB_H, PHB_L, PHC_H, 
 SPIClass SPI_2(ENC_NC, ENC_SDO, ENC_CLK);
 MagneticSensorMT6701SSI sensor = MagneticSensorMT6701SSI(ENC_CS);
 
-float target_voltage = 0.6;
+float target_voltage = 4;
 
 void setup() {
 
@@ -48,7 +48,7 @@ void setup() {
 
   // driver config
   driver.voltage_power_supply = 8.0;
-  driver.voltage_limit = 0.8;
+  driver.voltage_limit = 4;
   driver.pwm_frequency = 40000;
   driver.init();
   driver.setSlew(Slew_200Vus);
